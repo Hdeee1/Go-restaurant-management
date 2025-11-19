@@ -1,21 +1,27 @@
 package database
 
 import (
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
+
+	"github.com/Hdeee1/go-restaurant-management/models"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func InitDB() {
+	dsn := "root:dbmysql@tcp(localhost:3306)/go_restaurant_management?parseTime=true"
+	
 	var err error
-	DB, err = sql.Open("mysql", "root:dbmysql@tcp(localhost:3306)/go_restaurant_management")
+	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := DB.Ping(); err != nil {
-		log.Fatal(err)
-	}
+	DB.AutoMigrate(&models.User{})
+}
+
+func (u *gorm.DB) Create(user *models.User) error {
+	
 }
