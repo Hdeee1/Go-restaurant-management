@@ -58,10 +58,10 @@ func ValidateToken(signedToken string) (*SignDetail, error) {
 		return nil, err
 	}
 
-	claims, ok := token.Claims.(SignDetail)
+	claims, ok := token.Claims.(*SignDetail)
 	if !ok {
 		return nil, err
 	}
 
-	return &claims, nil
+	return claims, nil
 }

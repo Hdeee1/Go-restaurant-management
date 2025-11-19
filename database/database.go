@@ -14,14 +14,10 @@ func InitDB() {
 	dsn := "root:dbmysql@tcp(localhost:3306)/go_restaurant_management?parseTime=true"
 	
 	var err error
-	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	DB.AutoMigrate(&models.User{})
-}
-
-func (u *gorm.DB) Create(user *models.User) error {
-	
 }

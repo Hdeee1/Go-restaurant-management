@@ -21,7 +21,7 @@ func HashPassword(password string) string {
 }
 
 func VerifyPassword(password string, providedPassword string) (bool, string) {
-	err := bcrypt.CompareHashAndPassword([]byte(HashPassword(password)), []byte(providedPassword))
+	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(providedPassword))
 	if err != nil {
 		return false, "Wrong password"
 	}
@@ -64,13 +64,16 @@ func SignUp() gin.HandlerFunc {
 		user.Token = &token
 		user.Refresh_Token = &refreshToken
 
-		err = database.DB.Create(&user)
-		if err != nil {
+		if err := database.DB.Create(&user).Error; err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 			return 
 		}
+		
 
-		ctx.JSON(http.StatusCreated, gin.H{"message": "Successfully signed up", "user_id": user.User_id})
+		ctx.JSON(http.StatusCreated, gin.H{
+			"message": "Successfully signed up",
+			"user_id": user.User_id,
+		})
 	}
 }
 
