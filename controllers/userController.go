@@ -1,7 +1,13 @@
 package controllers
 
 import (
+	"net/http"
+
+	"github.com/Hdeee1/go-restaurant-management/database"
+	"github.com/Hdeee1/go-restaurant-management/helpers"
+	"github.com/Hdeee1/go-restaurant-management/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,13 +37,40 @@ func GetUsers() gin.HandlerFunc {
 
 func GetUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-
+		
 	}
 }
 
 func SignUp() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		var user models.User
+		
+		user.User_id = uuid.New().String()
 
+		if err := ctx.BindJSON(&user); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		hashedPass := HashPassword(*user.Password)
+		user.Password = &hashedPass
+
+		token, refreshToken, err := helpers.GenerateToken(*user.Email, user.User_id)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to generate token"})
+			return 
+		}
+
+		user.Token = &token
+		user.Refresh_Token = &refreshToken
+
+		err = database.DB.Create(&user)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+			return 
+		}
+
+		ctx.JSON(http.StatusCreated, gin.H{"message": "Successfully signed up", "user_id": user.User_id})
 	}
 }
 
