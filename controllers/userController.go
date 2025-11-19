@@ -79,6 +79,49 @@ func SignUp() gin.HandlerFunc {
 
 func Login() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		var loginInput struct {
+			Email		string	`json:"email"`
+			Password	string	`json:"password"`
+		}
 
+		if err := ctx.BindJSON(&loginInput); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		var user models.User
+
+		err := database.DB.Where("email = ?", loginInput.Email).First(&user).Error
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+			return 
+		}
+
+		isValid, msg := VerifyPassword(*user.Password, loginInput.Password)
+		if !isValid {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": msg})
+			return 
+		}
+
+		token, refreshToken, err := helpers.GenerateToken(loginInput.Email, user.User_id)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+			return 
+		}
+
+		user.Token = &token
+		user.Refresh_Token = &refreshToken
+
+		err = database.DB.Save(&user).Error
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return 
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "Login successfully",
+			"token": token,
+			"user_id": user.User_id, 
+		})
 	}
 }
