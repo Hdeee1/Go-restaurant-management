@@ -19,5 +19,14 @@ func InitDB() {
 		log.Fatal(err)
 	}
 
-	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(
+		&models.User{},
+		&models.Food{},
+		&models.Invoice{},
+		&models.Menu{},
+		&models.Note{},
+		&models.Order{},
+		&models.OrderItem{},
+		&models.Table{},
+	)
 }
