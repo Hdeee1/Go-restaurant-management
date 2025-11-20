@@ -44,7 +44,7 @@ func GetUsers() gin.HandlerFunc {
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
-			"user": users,
+			"users": users,
 		})
 	}
 }
