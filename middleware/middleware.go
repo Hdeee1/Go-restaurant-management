@@ -16,7 +16,7 @@ func Authentication() gin.HandlerFunc {
 			return 
 		}
 
-		tokenString := strings.TrimPrefix(token, "Bearer")
+		tokenString := strings.TrimPrefix(token, "Bearer ")
 
 		claims, err := helpers.ValidateToken(tokenString)
 		if err != nil {
