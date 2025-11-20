@@ -31,7 +31,21 @@ func VerifyPassword(password string, providedPassword string) (bool, string) {
 
 func GetUsers() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		var users []models.User
 
+		err := database.DB.Find(&users).Error
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		for i := range users {
+			users[i].Password = nil
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"user": users,
+		})
 	}
 }
 
