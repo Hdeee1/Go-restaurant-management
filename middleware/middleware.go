@@ -26,5 +26,7 @@ func Authentication() gin.HandlerFunc {
 
 		ctx.Set("email", claims.Email)
 		ctx.Set("user_id", claims.User_id)
+
+		ctx.Next()
 	}
 }
