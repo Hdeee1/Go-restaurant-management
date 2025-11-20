@@ -51,7 +51,18 @@ func GetUsers() gin.HandlerFunc {
 
 func GetUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		userID := ctx.Param("user_id")
+
+		var user models.User
+
+		if err := database.DB.Where("user_id = ?", userID).Find(&user).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return 
+		}
 		
+		user.Password = nil
+
+		ctx.JSON(http.StatusOK, user)
 	}
 }
 
