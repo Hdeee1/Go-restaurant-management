@@ -72,6 +72,20 @@ func AddFood() gin.HandlerFunc {
 
 func UpdateFood() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		
+		foodID := ctx.Param("food_id")
+
+		var food models.Food
+
+		if err := database.DB.Where("food_id").First(&food).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "food_id not found"})
+			return 
+		}
+
+		if err := ctx.BindJSON(&food); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		database.DB.Model(&food).Updates()
 	}
 }
