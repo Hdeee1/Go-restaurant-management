@@ -27,7 +27,16 @@ func GetFoods() gin.HandlerFunc {
 
 func GetFood() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		foodID := ctx.Param("food_id")
 
+		var food models.Food
+
+		if err := database.DB.Where("food_id = ?", foodID).Find(&food).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "food_id not found"})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{"food_id": foodID})
 	}
 }
 
