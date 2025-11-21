@@ -42,7 +42,22 @@ func CreateMenu() gin.HandlerFunc {
 			return 
 		}
 
+		if menu.Start_date != nil && menu.End_date != nil {
+			if menu.End_date.Before(*menu.Start_date) {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": "end_date must be after start_date"})
+				return
+			}
+		}
 
+		if err := database.DB.Create(&menu).Error; err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(http.StatusCreated, gin.H{
+			"message": "menu created",
+			"menu_id": menu.Menu_id,
+		})
 	}
 }
 
