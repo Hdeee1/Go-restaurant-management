@@ -31,12 +31,12 @@ func GetFood() gin.HandlerFunc {
 
 		var food models.Food
 
-		if err := database.DB.Where("food_id = ?", foodID).Find(&food).Error; err != nil {
+		if err := database.DB.Where("food_id = ?", foodID).First(&food).Error; err != nil {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "food_id not found"})
 			return
 		}
 
-		ctx.JSON(http.StatusOK, gin.H{"food_id": foodID})
+		ctx.JSON(http.StatusOK, food)
 	}
 }
 
@@ -76,16 +76,25 @@ func UpdateFood() gin.HandlerFunc {
 
 		var food models.Food
 
-		if err := database.DB.Where("food_id").First(&food).Error; err != nil {
+		if err := database.DB.Where("food_id = ?", foodID).First(&food).Error; err != nil {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "food_id not found"})
 			return 
 		}
-
-		if err := ctx.BindJSON(&food); err != nil {
+		
+		var updateData models.Food
+		if err := ctx.BindJSON(&updateData); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return 
 		}
 
-		database.DB.Model(&food).Updates()
+		if err := database.DB.Model(&food).Updates(updateData).Error; err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return 
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "Food updated",
+			"food": food,
+		})
 	}
 }
