@@ -11,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	dsn := "root:dbmysql@tcp(localhost:3306)/go_restaurant_management?parseTime=true"
+	dsn := "atmin:atmin123@tcp(localhost:3306)/go_restaurant_management?parseTime=true"
 	
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
