@@ -11,7 +11,16 @@ import (
 
 func GetOrders() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
+		var orders []models.Order
 
+		if err := database.DB.Find(&orders).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"orders": orders,
+		})
 	}
 }
 
