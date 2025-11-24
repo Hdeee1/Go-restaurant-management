@@ -26,7 +26,16 @@ func GetOrders() gin.HandlerFunc {
 
 func GetOrder() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
-		
+		order_id := ctx.Param("order_id")
+
+		var order models.Order
+
+		if err := database.DB.Where("order_id = ?", order_id).First(&order).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "order_id not found"})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, order)
 	}
 }
 
