@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Hdeee1/go-restaurant-management/database"
+	"github.com/Hdeee1/go-restaurant-management/helpers"
 	"github.com/Hdeee1/go-restaurant-management/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -44,12 +45,18 @@ func CreateMenu() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var menu models.Menu
 
-		menu.Menu_id = uuid.New().String()
-
+		
 		if err := ctx.BindJSON(&menu); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return 
 		}
+
+		if err := helpers.Validate.Struct(menu); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		menu.Menu_id = uuid.New().String()
 
 		if menu.Start_date != nil && menu.End_date != nil {
 			if menu.End_date.Before(*menu.Start_date) {

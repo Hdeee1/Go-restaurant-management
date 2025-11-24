@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Hdeee1/go-restaurant-management/database"
+	"github.com/Hdeee1/go-restaurant-management/helpers"
 	"github.com/Hdeee1/go-restaurant-management/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -42,13 +43,18 @@ func GetInvoice() gin.HandlerFunc {
 func CreateInvoice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var invoice models.Invoice
-
-		invoice.Invoice_id = uuid.New().String()
-
+		
 		if err := ctx.BindJSON(&invoice); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+
+		if err := helpers.Validate.Struct(invoice); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		invoice.Invoice_id = uuid.New().String()
 
 		if err := database.DB.Create(&invoice).Error; err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

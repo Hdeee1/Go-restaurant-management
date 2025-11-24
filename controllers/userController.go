@@ -70,13 +70,17 @@ func SignUp() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var user models.User
 		
-		user.User_id = uuid.New().String()
-
 		if err := ctx.BindJSON(&user); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return 
 		}
-
+		
+		if err := helpers.Validate.Struct(user); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+		
+		user.User_id = uuid.New().String()
 		hashedPass := HashPassword(*user.Password)
 		user.Password = &hashedPass
 

@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"net/http"
-	
+
 	"github.com/Hdeee1/go-restaurant-management/database"
+	"github.com/Hdeee1/go-restaurant-management/helpers"
 	"github.com/Hdeee1/go-restaurant-management/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -43,12 +44,18 @@ func CreateOrder() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
 		var order models.Order
 
-		order.Order_id = uuid.New().String()
-
+		
 		if err := ctx.BindJSON(&order); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+
+		if err := helpers.Validate.Struct(order); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		order.Order_id = uuid.New().String()
 
 		if err := database.DB.Create(&order).Error; err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

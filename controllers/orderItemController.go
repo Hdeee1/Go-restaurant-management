@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Hdeee1/go-restaurant-management/database"
+	"github.com/Hdeee1/go-restaurant-management/helpers"
 	"github.com/Hdeee1/go-restaurant-management/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -42,13 +43,18 @@ func GetOrderItem() gin.HandlerFunc {
 func CreateOrderItem() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
 		var orderItem models.OrderItem
-
-		orderItem.Order_item_id = uuid.New().String()
-
+		
 		if err := ctx.BindJSON(&orderItem); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+
+		if err := helpers.Validate.Struct(orderItem); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		orderItem.Order_item_id = uuid.New().String()
 
 		if err := database.DB.Create(&orderItem).Error; err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

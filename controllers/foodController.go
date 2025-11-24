@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Hdeee1/go-restaurant-management/database"
+	"github.com/Hdeee1/go-restaurant-management/helpers"
 	"github.com/Hdeee1/go-restaurant-management/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -45,6 +46,11 @@ func AddFood() gin.HandlerFunc {
 		var food models.Food
 		
 		if err := ctx.BindJSON(&food); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		if err := helpers.Validate.Struct(food); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return 
 		}
