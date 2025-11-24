@@ -72,6 +72,29 @@ func CreateMenu() gin.HandlerFunc {
 
 func UpdateMenu() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		
+		menuID := ctx.Param("menu_id")
+
+		var menu models.Menu
+
+		if err := database.DB.Where("menu_id = ?", menuID).First(&menu).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "menu_id not found"})
+			return
+		}
+
+		var updateData models.Menu
+		if err := ctx.BindJSON(&updateData); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
+		if err := database.DB.Model(&menu).Updates(updateData).Error; err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return 
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "menu updated",
+			"menu_id": menu.Menu_id,
+		})
 	}
 }
