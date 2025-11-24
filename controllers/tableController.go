@@ -26,7 +26,16 @@ func GetTables() gin.HandlerFunc {
 
 func GetTable() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
-		
+		tableID := ctx.Param("table_id")
+
+		var table models.Table
+
+		if err := database.DB.Where("table_id = ?", tableID).First(&table).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "table_id not found"})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, table)
 	}
 }
 
@@ -55,6 +64,29 @@ func CreateTable() gin.HandlerFunc {
 
 func UpdateTable() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
-		
+		tableID := ctx.Param("table_id")
+
+		var table models.Table
+
+		if err := database.DB.Where("table_id = ?", tableID).First(&table).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "table_id not found"})
+			return
+		}
+
+		var updateData models.Table
+		if err := ctx.BindJSON(&updateData); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := database.DB.Model(&table).Updates(updateData).Error; err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "table updated",
+			"table_id": table.Table_id,
+		})
 	}
 }
