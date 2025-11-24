@@ -11,7 +11,16 @@ import (
 
 func GetTables() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
+		var tables []models.Table
 
+		if err := database.DB.Find(&tables).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"tables": tables,
+		})
 	}
 }
 
