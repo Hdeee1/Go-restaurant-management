@@ -1,12 +1,13 @@
 package helpers
 
 import (
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var SECRET_KEY = []byte("inilah_my_secret_keyku")
+var SECRET_KEY []byte
 
 type SignDetail struct {
 	Email 	string
@@ -22,6 +23,8 @@ func GenerateToken(email, userID string) (string, string, error) {
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 		},
 	}
+
+	SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
 
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(SECRET_KEY)
 	if err != nil {
