@@ -27,7 +27,16 @@ func GetMenus() gin.HandlerFunc {
 
 func GetMenu() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		
+		menu_id := ctx.Param("menu_id")
+
+		var menu models.Menu
+
+		if err := database.DB.Where("menu_id = ?", menu_id).First(&menu).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "menu_id not found"})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, menu)
 	}
 }
 
