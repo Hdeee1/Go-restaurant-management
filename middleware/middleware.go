@@ -30,3 +30,23 @@ func Authentication() gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
+func CheckRole(allowedRoles ...string) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		userRole := ctx.GetString("role")
+
+		isAllowed := false
+		for _, role := range allowedRoles {
+			if role == userRole {
+				isAllowed = true
+			}
+		}
+
+		if !isAllowed {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			return 
+		}
+
+		ctx.Next()
+	}
+}
