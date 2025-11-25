@@ -20,7 +20,7 @@ func GetOrders() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
 		var orders []models.Order
 
-		if err := database.DB.Find(&orders).Error; err != nil {
+		if err := database.DB.Preload("OrderItems").Find(&orders).Error; err != nil {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
@@ -37,7 +37,7 @@ func GetOrder() gin.HandlerFunc {
 
 		var order models.Order
 
-		if err := database.DB.Where("order_id = ?", order_id).First(&order).Error; err != nil {
+		if err := database.DB.Preload("OrderItems").Where("order_id = ?", order_id).First(&order).Error; err != nil {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "order_id not found"})
 			return
 		}
