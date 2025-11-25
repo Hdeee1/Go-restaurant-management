@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/Hdeee1/go-restaurant-management/database"
 	"github.com/Hdeee1/go-restaurant-management/helpers"
@@ -9,6 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+type OrderRequest struct {
+	Table_id string `json:"table_id"`
+	Order_items []models.OrderItem `json:"order_items"`
+}
 
 func GetOrders() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
@@ -43,28 +49,74 @@ func GetOrder() gin.HandlerFunc {
 func CreateOrder() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
 		var order models.Order
-
+		var req OrderRequest
 		
-		if err := ctx.BindJSON(&order); err != nil {
+		if err := ctx.BindJSON(&req); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		if err := helpers.Validate.Struct(order); err != nil {
+		tx := database.DB.Begin()
+		
+		order.Order_id = uuid.New().String()
+		order.Order_date = time.Now()
+		order.Table_id = &req.Table_id
+
+		if err := tx.Create(&order).Error; err != nil {
+			tx.Rollback()
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		for _, item := range req.Order_items {
+			item.Order_item_id = uuid.New().String()
+			item.Order_id = order.Order_id
+
+			if item.Food_id == nil || item.Quantity == nil {
+				tx.Rollback()
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": "Incomplete data item"})
+				return 
+			}
+
+			if err := tx.Create(&item).Error; err != nil {
+				tx.Rollback()
+				ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save order item"})
+				return 
+			}
+		}
+		tx.Commit()
+
+		ctx.JSON(http.StatusCreated, gin.H{
+			"message": "order created",
+			"order_id": order.Order_id,
+		})
+	}
+}
+
+func CreateOrderItem() gin.HandlerFunc {
+	return  func(ctx *gin.Context) {
+		var orderItem models.OrderItem
+		
+		if err := ctx.BindJSON(&orderItem); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := helpers.Validate.Struct(orderItem); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return 
 		}
 
-		order.Order_id = uuid.New().String()
+		orderItem.Order_item_id = uuid.New().String()
 
-		if err := database.DB.Create(&order).Error; err != nil {
+		if err := database.DB.Create(&orderItem).Error; err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
 		ctx.JSON(http.StatusCreated, gin.H{
-			"message": "order created",
-			"order_id": order.Order_id,
+			"message": "order item created",
+			"order_item_id": orderItem.Order_item_id,
 		})
 	}
 }
