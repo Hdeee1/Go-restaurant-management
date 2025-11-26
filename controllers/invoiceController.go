@@ -14,13 +14,16 @@ func GetInvoices() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var invoices []models.Invoice
 
-		if err := database.DB.Find(&invoices).Error; err != nil {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
+		result := database.DB.Scopes(helpers.Paginate(ctx)).Find(&invoices)
+		if result.Error != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+			return 
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"invoices": invoices,
+			"page": ctx.DefaultQuery("page", "1"),
+			"limit": ctx.DefaultQuery("limit", "10"),
 		})
 	}
 }

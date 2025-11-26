@@ -14,14 +14,16 @@ func GetFoods() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var foods []models.Food
 
-		err := database.DB.Find(&foods).Error
-		if err != nil {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		result := database.DB.Scopes(helpers.Paginate(ctx)).Find(&foods)
+		if result.Error != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
 			return 
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"foods": foods,
+			"page": ctx.DefaultQuery("page", "1"),
+			"limit": ctx.DefaultQuery("limit", "10"),
 		})
 	}
 }

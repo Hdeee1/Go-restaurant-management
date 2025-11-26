@@ -14,13 +14,16 @@ func GetTables() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
 		var tables []models.Table
 
-		if err := database.DB.Find(&tables).Error; err != nil {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
+		result := database.DB.Scopes(helpers.Paginate(ctx)).Find(&tables)
+		if result.Error != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+			return 
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"tables": tables,
+			"page": ctx.DefaultQuery("page", "1"),
+			"limit": ctx.DefaultQuery("limit", "10"),
 		})
 	}
 }

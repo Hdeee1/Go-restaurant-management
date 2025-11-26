@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Hdeee1/go-restaurant-management/database"
+	"github.com/Hdeee1/go-restaurant-management/helpers"
 	"github.com/Hdeee1/go-restaurant-management/models"
 	"github.com/gin-gonic/gin"
 )
@@ -12,13 +13,16 @@ func GetOrderItems() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
 		var orderItems []models.OrderItem
 
-		if err := database.DB.Find(&orderItems).Error; err != nil {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
+		result := database.DB.Scopes(helpers.Paginate(ctx)).Find(&orderItems)
+		if result.Error != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+			return 
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"order_items": orderItems,
+			"page": ctx.DefaultQuery("page", "1"),
+			"limit": ctx.DefaultQuery("limit", "10"),
 		})
 	}
 }

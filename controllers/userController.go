@@ -33,18 +33,16 @@ func GetUsers() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var users []models.User
 
-		err := database.DB.Find(&users).Error
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		for i := range users {
-			users[i].Password = nil
+		result := database.DB.Scopes(helpers.Paginate(ctx)).Find(&users)
+		if result.Error != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+			return 
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
-			"users": users,
+			"data": users,
+			"page": ctx.DefaultQuery("page", "1"),
+			"limit": ctx.DefaultQuery("limit", "10"),
 		})
 	}
 }

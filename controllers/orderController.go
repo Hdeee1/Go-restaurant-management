@@ -20,13 +20,16 @@ func GetOrders() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
 		var orders []models.Order
 
-		if err := database.DB.Preload("OrderItems").Find(&orders).Error; err != nil {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
+		result := database.DB.Scopes(helpers.Paginate(ctx)).Preload("OrderItems").Find(&orders)
+		if result.Error != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+			return 
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"orders": orders,
+			"page": ctx.DefaultQuery("page", "1"),
+			"limit": ctx.DefaultQuery("limit", "10"),
 		})
 	}
 }
