@@ -12,8 +12,8 @@ import (
 )
 
 type OrderRequest struct {
-	Table_id string `json:"table_id"`
-	Order_items []models.OrderItem `json:"order_items"`
+	Table_id string `json:"table_id" validate:"required"`
+	Order_items []models.OrderItem `json:"order_items" validate:"required"`
 }
 
 func GetOrders() gin.HandlerFunc {
@@ -56,6 +56,11 @@ func CreateOrder() gin.HandlerFunc {
 			return
 		}
 
+		if err := helpers.Validate.Struct(req); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
+		}
+
 		tx := database.DB.Begin()
 		
 		order.Order_id = uuid.New().String()
@@ -69,6 +74,14 @@ func CreateOrder() gin.HandlerFunc {
 		}
 
 		for _, item := range req.Order_items {
+			var food models.Food
+			if err := database.DB.Where("food_id = ?", item.Food_id).First(&food).Error; err != nil {
+				tx.Rollback()
+				ctx.JSON(http.StatusNotFound, gin.H{"error": "food_id not found"})
+				return
+			}
+
+			item.Unit_price = food.Price
 			item.Order_item_id = uuid.New().String()
 			item.Order_id = order.Order_id
 
@@ -124,12 +137,27 @@ func CreateOrderItem() gin.HandlerFunc {
 func UpdateOrder() gin.HandlerFunc {
 	return  func(ctx *gin.Context) {
 		order_id := ctx.Param("order_id")
-
-		var order models.Order
+		
+		var order models.Order		
 
 		if err := database.DB.Where("order_id = ?", order_id).First(&order).Error; err != nil {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "order_id not found"})
 			return
+		}
+
+		var invoice models.Invoice
+		
+		err := database.DB.Where("order_id = ?", order_id).First(&invoice).Error
+		if err == nil {
+			if invoice.Payment_status != nil && *invoice.Payment_status == "PAID" {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": "order already paid"})
+				return
+			}
+		}
+
+		if err := helpers.Validate.Struct(order); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return 
 		}
 
 		var updateData models.Order
