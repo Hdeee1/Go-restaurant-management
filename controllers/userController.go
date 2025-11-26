@@ -36,7 +36,7 @@ func GetUsers() gin.HandlerFunc {
 		err := database.DB.Find(&users).Error
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return 
+			return
 		}
 
 		for i := range users {
@@ -57,9 +57,9 @@ func GetUser() gin.HandlerFunc {
 
 		if err := database.DB.Where("user_id = ?", userID).Find(&user).Error; err != nil {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-			return 
+			return
 		}
-		
+
 		user.Password = nil
 
 		ctx.JSON(http.StatusOK, user)
@@ -69,25 +69,25 @@ func GetUser() gin.HandlerFunc {
 func SignUp() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var user models.User
-		
+
 		if err := ctx.BindJSON(&user); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return 
+			return
 		}
-		
+
 		if err := helpers.Validate.Struct(user); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return 
+			return
 		}
-		
+
 		user.User_id = uuid.New().String()
 		hashedPass := HashPassword(*user.Password)
 		user.Password = &hashedPass
 
-		token, refreshToken, err := helpers.GenerateToken(*user.Email, user.User_id)
+		token, refreshToken, err := helpers.GenerateToken(*user.Email, user.User_id, *user.Role)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to generate token"})
-			return 
+			return
 		}
 
 		user.Token = &token
@@ -95,9 +95,8 @@ func SignUp() gin.HandlerFunc {
 
 		if err := database.DB.Create(&user).Error; err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
-			return 
+			return
 		}
-		
 
 		ctx.JSON(http.StatusCreated, gin.H{
 			"message": "Successfully signed up",
@@ -109,13 +108,13 @@ func SignUp() gin.HandlerFunc {
 func Login() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var loginInput struct {
-			Email		string	`json:"email"`
-			Password	string	`json:"password"`
+			Email    string `json:"email"`
+			Password string `json:"password"`
 		}
 
 		if err := ctx.BindJSON(&loginInput); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return 
+			return
 		}
 
 		var user models.User
@@ -123,19 +122,19 @@ func Login() gin.HandlerFunc {
 		err := database.DB.Where("email = ?", loginInput.Email).First(&user).Error
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
-			return 
+			return
 		}
 
 		isValid, msg := VerifyPassword(*user.Password, loginInput.Password)
 		if !isValid {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": msg})
-			return 
+			return
 		}
 
-		token, refreshToken, err := helpers.GenerateToken(loginInput.Email, user.User_id)
+		token, refreshToken, err := helpers.GenerateToken(loginInput.Email, user.User_id, *user.Role)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
-			return 
+			return
 		}
 
 		user.Token = &token
@@ -144,13 +143,13 @@ func Login() gin.HandlerFunc {
 		err = database.DB.Save(&user).Error
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return 
+			return
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"message": "Login successfully",
-			"token": token,
-			"user_id": user.User_id, 
+			"token":   token,
+			"user_id": user.User_id,
 		})
 	}
 }

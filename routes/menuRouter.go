@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func MenuRoutes(incomingRoutes *gin.Engine){
-	incomingRoutes.POST("/menus", middleware.CheckRole("ADMIN"), controllers.CreateMenu())
+func MenuRoutes(incomingRoutes *gin.Engine) {
+	incomingRoutes.POST("/menus", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.CreateMenu())
 	incomingRoutes.GET("/menus", controllers.GetMenus())
 	incomingRoutes.GET("/menus/:menu_id", controllers.GetMenu())
-	incomingRoutes.PATCH("/menus/:menu_id", middleware.CheckRole("ADMIN"), controllers.UpdateMenu())
-} 
+	incomingRoutes.PATCH("/menus/:menu_id", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.UpdateMenu())
+}

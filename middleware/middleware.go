@@ -13,7 +13,7 @@ func Authentication() gin.HandlerFunc {
 		token := ctx.GetHeader("Authorization")
 		if token == "" {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "No authorization header"})
-			return 
+			return
 		}
 
 		tokenString := strings.TrimPrefix(token, "Bearer ")
@@ -21,11 +21,12 @@ func Authentication() gin.HandlerFunc {
 		claims, err := helpers.ValidateToken(tokenString)
 		if err != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
-			return 
+			return
 		}
 
 		ctx.Set("email", claims.Email)
 		ctx.Set("user_id", claims.User_id)
+		ctx.Set("role", claims.Role)
 
 		ctx.Next()
 	}
@@ -37,14 +38,14 @@ func CheckRole(allowedRoles ...string) gin.HandlerFunc {
 
 		isAllowed := false
 		for _, role := range allowedRoles {
-			if role == userRole {
+			if userRole == role {
 				isAllowed = true
 			}
 		}
 
 		if !isAllowed {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return 
+			return
 		}
 
 		ctx.Next()

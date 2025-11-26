@@ -10,15 +10,17 @@ import (
 var SECRET_KEY []byte
 
 type SignDetail struct {
-	Email 	string
-	User_id	string
+	Email   string
+	User_id string
+	Role    string
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(email, userID string) (string, string, error) {
+func GenerateToken(email, userID, role string) (string, string, error) {
 	claims := &SignDetail{
-		Email: email,
+		Email:   email,
 		User_id: userID,
+		Role:    role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 		},
@@ -32,8 +34,9 @@ func GenerateToken(email, userID string) (string, string, error) {
 	}
 
 	refreshClaims := &SignDetail{
-		Email: email,
+		Email:   email,
 		User_id: userID,
+		Role:    role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)),
 		},
@@ -43,7 +46,6 @@ func GenerateToken(email, userID string) (string, string, error) {
 	if err != nil {
 		return "", "", nil
 	}
-	
 
 	return token, refreshToken, nil
 }
