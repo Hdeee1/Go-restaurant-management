@@ -8,7 +8,30 @@ import (
 	"github.com/Hdeee1/go-restaurant-management/middleware"
 	"github.com/Hdeee1/go-restaurant-management/routes"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/Hdeee1/go-restaurant-management/docs" // This will be auto-generated
 )
+
+// @title Restaurant Management API
+// @version 1.0
+// @description This is a comprehensive restaurant management system API built with Go and Gin framework
+// @description Features include user management, food menus, table reservations, orders, and invoicing
+
+// @contact.name API Support
+// @contact.email support@restaurant-api.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8081
+// @BasePath /
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 
 func printRoutes(router *gin.Engine) {
 	routesList := router.Routes()
@@ -100,6 +123,9 @@ func main() {
 
 	router := gin.New()
 	router.Use(gin.Logger())
+
+	// Swagger documentation route (accessible without authentication)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	routes.UserRouter(router)
 	router.Use(middleware.Authentication())
