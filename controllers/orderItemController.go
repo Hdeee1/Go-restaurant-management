@@ -10,17 +10,18 @@ import (
 )
 
 // GetOrderItems godoc
-// @Summary Get all order items
-// @Description Retrieve a paginated list of all order items
-// @Tags OrderItems
-// @Accept json
-// @Produce json
-// @Param page query int false "Page number" default(1)
-// @Param limit query int false "Items per page" default(10)
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /orderitems [get]
+//
+//	@Summary		Get all order items
+//	@Description	Retrieve a paginated list of all order items
+//	@Tags			OrderItems
+//	@Accept			json
+//	@Produce		json
+//	@Param			page	query	int	false	"Page number"		default(1)
+//	@Param			limit	query	int	false	"Items per page"	default(10)
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/orderitems [get]
 func GetOrderItems() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var orderItems []models.OrderItem
@@ -40,16 +41,17 @@ func GetOrderItems() gin.HandlerFunc {
 }
 
 // GetOrderItem godoc
-// @Summary Get order item by ID
-// @Description Retrieve a specific order item by order_item_id
-// @Tags OrderItems
-// @Accept json
-// @Produce json
-// @Param order_item_id path string true "Order Item ID"
-// @Security BearerAuth
-// @Success 200 {object} models.OrderItem
-// @Failure 404 {object} map[string]interface{}
-// @Router /orderitems/{order_item_id} [get]
+//
+//	@Summary		Get order item by ID
+//	@Description	Retrieve a specific order item by order_item_id
+//	@Tags			OrderItems
+//	@Accept			json
+//	@Produce		json
+//	@Param			order_item_id	path	string	true	"Order Item ID"
+//	@Security		BearerAuth
+//	@Success		200	{object}	models.OrderItem
+//	@Failure		404	{object}	map[string]interface{}
+//	@Router			/orderitems/{order_item_id} [get]
 func GetOrderItem() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		order_item_id := ctx.Param("order_item_id")
@@ -66,19 +68,20 @@ func GetOrderItem() gin.HandlerFunc {
 }
 
 // UpdateOrderItem godoc
-// @Summary Update an order item
-// @Description Update an existing order item by order_item_id
-// @Tags OrderItems
-// @Accept json
-// @Produce json
-// @Param order_item_id path string true "Order Item ID"
-// @Param order_item body models.OrderItem true "Order item object"
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 404 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /orderitems/{order_item_id} [put]
+//
+//	@Summary		Update an order item
+//	@Description	Update an existing order item by order_item_id
+//	@Tags			OrderItems
+//	@Accept			json
+//	@Produce		json
+//	@Param			order_item_id	path	string				true	"Order Item ID"
+//	@Param			order_item		body	models.OrderItem	true	"Order item object"
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		404	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/orderitems/{order_item_id} [put]
 func UpdateOrderItem() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		order_item_id := ctx.Param("order_item_id")

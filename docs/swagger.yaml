@@ -1,10 +1,81 @@
 basePath: /
 definitions:
+  controllers.OrderRequest:
+    properties:
+      order_items:
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      table_id:
+        type: string
+    required:
+    - order_items
+    - table_id
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
   models.ErrorResponse:
     properties:
       error:
         example: Error message
         type: string
+    type: object
+  models.Food:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      food_id:
+        type: string
+      food_image:
+        type: string
+      id:
+        type: integer
+      menu_id:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
+    required:
+    - food_image
+    - menu_id
+    - name
+    - price
+    type: object
+  models.Invoice:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      invoice_id:
+        type: string
+      order_id:
+        type: string
+      payment_due_date:
+        type: string
+      payment_method:
+        type: string
+      payment_status:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - payment_status
     type: object
   models.LoginRequest:
     properties:
@@ -29,6 +100,97 @@ definitions:
       user_id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+    type: object
+  models.Menu:
+    properties:
+      category:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      end_date:
+        type: string
+      id:
+        type: integer
+      menu_id:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - category
+    - menu_id
+    - name
+    type: object
+  models.Note:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      note_id:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.Order:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      order_date:
+        type: string
+      order_id:
+        type: string
+      order_items:
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      table_id:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - order_date
+    type: object
+  models.OrderItem:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      food_id:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: string
+      order_item_id:
+        type: string
+      quantity:
+        type: string
+      unit_price:
+        type: number
+      updatedAt:
+        type: string
+    required:
+    - food_id
+    - order_id
+    - quantity
+    - unit_price
     type: object
   models.SignUpRequest:
     properties:
@@ -55,12 +217,16 @@ definitions:
       phone:
         example: "+1234567890"
         type: string
+      role:
+        example: user|admin
+        type: string
     required:
     - email
     - first_name
     - last_name
     - password
     - phone
+    - role
     type: object
   models.SignUpResponse:
     properties:
@@ -70,6 +236,26 @@ definitions:
       user_id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+    type: object
+  models.Table:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      number_of_guest:
+        type: integer
+      table_id:
+        type: string
+      table_number:
+        type: integer
+      updatedAt:
+        type: string
+    required:
+    - number_of_guest
+    - table_number
     type: object
   models.UserResponse:
     properties:
@@ -125,9 +311,7 @@ definitions:
     type: object
 host: localhost:8081
 info:
-  contact:
-    email: support@restaurant-api.com
-    name: API Support
+  contact: {}
   description: |-
     This is a comprehensive restaurant management system API built with Go and Gin framework
     Features include user management, food menus, table reservations, orders, and invoicing
@@ -137,6 +321,989 @@ info:
   title: Restaurant Management API
   version: "1.0"
 paths:
+  /foods:
+    get:
+      consumes:
+      - application/json
+      description: Get all foods
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all foods
+      tags:
+      - Foods
+    post:
+      consumes:
+      - application/json
+      description: Add a new food
+      parameters:
+      - description: Food object
+        in: body
+        name: food
+        required: true
+        schema:
+          $ref: '#/definitions/models.Food'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Food'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Add a new food
+      tags:
+      - Foods
+  /foods/{food_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a food by ID
+      parameters:
+      - description: Food ID
+        in: path
+        name: food_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Food'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get a food by ID
+      tags:
+      - Foods
+    put:
+      consumes:
+      - application/json
+      description: Update a food
+      parameters:
+      - description: Food ID
+        in: path
+        name: food_id
+        required: true
+        type: string
+      - description: Food object
+        in: body
+        name: food
+        required: true
+        schema:
+          $ref: '#/definitions/models.Food'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Food'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update a food
+      tags:
+      - Foods
+  /invoices:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of all invoices
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all invoices
+      tags:
+      - Invoices
+    post:
+      consumes:
+      - application/json
+      description: Create a new invoice with the provided information
+      parameters:
+      - description: Invoice object
+        in: body
+        name: invoice
+        required: true
+        schema:
+          $ref: '#/definitions/models.Invoice'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new invoice
+      tags:
+      - Invoices
+  /invoices/{invoice_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific invoice by invoice_id
+      parameters:
+      - description: Invoice ID
+        in: path
+        name: invoice_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Invoice'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get invoice by ID
+      tags:
+      - Invoices
+    put:
+      consumes:
+      - application/json
+      description: Update an existing invoice by invoice_id
+      parameters:
+      - description: Invoice ID
+        in: path
+        name: invoice_id
+        required: true
+        type: string
+      - description: Invoice object
+        in: body
+        name: invoice
+        required: true
+        schema:
+          $ref: '#/definitions/models.Invoice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update an invoice
+      tags:
+      - Invoices
+  /menus:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of all menus
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all menus
+      tags:
+      - Menus
+    post:
+      consumes:
+      - application/json
+      description: Create a new menu with the provided information. Requires admin
+        role.
+      parameters:
+      - description: Menu object
+        in: body
+        name: menu
+        required: true
+        schema:
+          $ref: '#/definitions/models.Menu'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new menu (Admin only)
+      tags:
+      - Menus
+  /menus/{menu_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific menu by menu_id
+      parameters:
+      - description: Menu ID
+        in: path
+        name: menu_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Menu'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get menu by ID
+      tags:
+      - Menus
+    put:
+      consumes:
+      - application/json
+      description: Update an existing menu by menu_id. Requires admin role.
+      parameters:
+      - description: Menu ID
+        in: path
+        name: menu_id
+        required: true
+        type: string
+      - description: Menu object
+        in: body
+        name: menu
+        required: true
+        schema:
+          $ref: '#/definitions/models.Menu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a menu (Admin only)
+      tags:
+      - Menus
+  /notes:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of all notes
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all notes
+      tags:
+      - Notes
+    post:
+      consumes:
+      - application/json
+      description: Create a new note with the provided information
+      parameters:
+      - description: Note object
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/models.Note'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new note
+      tags:
+      - Notes
+  /notes/{note_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific note by note_id
+      parameters:
+      - description: Note ID
+        in: path
+        name: note_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Note'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get note by ID
+      tags:
+      - Notes
+    put:
+      consumes:
+      - application/json
+      description: Update an existing note by note_id
+      parameters:
+      - description: Note ID
+        in: path
+        name: note_id
+        required: true
+        type: string
+      - description: Note object
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/models.Note'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a note
+      tags:
+      - Notes
+  /orderitems:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of all order items
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all order items
+      tags:
+      - OrderItems
+    post:
+      consumes:
+      - application/json
+      description: Add a new item to an existing order
+      parameters:
+      - description: Order item object
+        in: body
+        name: order_item
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderItem'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new order item
+      tags:
+      - Orders
+  /orderitems/{order_item_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific order item by order_item_id
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: order_item_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OrderItem'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get order item by ID
+      tags:
+      - OrderItems
+    put:
+      consumes:
+      - application/json
+      description: Update an existing order item by order_item_id
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: order_item_id
+        required: true
+        type: string
+      - description: Order item object
+        in: body
+        name: order_item
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update an order item
+      tags:
+      - OrderItems
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of all orders with their order items
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all orders
+      tags:
+      - Orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new order with order items. Automatically validates food
+        items and calculates prices.
+      parameters:
+      - description: Order with items
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.OrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new order
+      tags:
+      - Orders
+  /orders/{order_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific order by order_id with its order items
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get order by ID
+      tags:
+      - Orders
+    put:
+      consumes:
+      - application/json
+      description: Update an existing order by order_id. Cannot update if the order
+        is already paid.
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: Order object
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update an order
+      tags:
+      - Orders
+  /tables:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of all tables
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all tables
+      tags:
+      - Tables
+    post:
+      consumes:
+      - application/json
+      description: Create a new table with the provided information
+      parameters:
+      - description: Table object
+        in: body
+        name: table
+        required: true
+        schema:
+          $ref: '#/definitions/models.Table'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new table
+      tags:
+      - Tables
+  /tables/{table_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific table by table_id
+      parameters:
+      - description: Table ID
+        in: path
+        name: table_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Table'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get table by ID
+      tags:
+      - Tables
+    put:
+      consumes:
+      - application/json
+      description: Update an existing table by table_id
+      parameters:
+      - description: Table ID
+        in: path
+        name: table_id
+        required: true
+        type: string
+      - description: Table object
+        in: body
+        name: table
+        required: true
+        schema:
+          $ref: '#/definitions/models.Table'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a table
+      tags:
+      - Tables
   /users:
     get:
       consumes:
@@ -267,3 +1434,20 @@ securityDefinitions:
     name: Authorization
     type: apiKey
 swagger: "2.0"
+tags:
+- description: Operations about Users (SingUp, Login, Profile)
+  name: Users
+- description: Menu Management
+  name: Menus
+- description: Manage Food Item
+  name: Foods
+- description: Restaurant Tables
+  name: Tables
+- description: Order Management
+  name: Orders
+- description: Order Item Details
+  name: OrderItems
+- description: Payment and Invoice
+  name: Invoices
+- description: Additional Notes for Orders
+  name: Notes

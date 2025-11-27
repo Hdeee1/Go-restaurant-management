@@ -26,6 +26,7 @@ type SignUpRequest struct {
 	LastName  string `json:"last_name" example:"Doe" binding:"required,min=2,max=100"`
 	Phone     string `json:"phone" example:"+1234567890" binding:"required"`
 	Avatar    string `json:"avatar" example:"https://example.com/avatar.jpg"`
+	Role      string `json:"role" example:"user|admin" binding:"required"`
 }
 
 // LoginRequest represents the request body for user login

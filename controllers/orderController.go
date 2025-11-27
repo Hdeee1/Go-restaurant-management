@@ -17,17 +17,18 @@ type OrderRequest struct {
 }
 
 // GetOrders godoc
-// @Summary Get all orders
-// @Description Retrieve a paginated list of all orders with their order items
-// @Tags Orders
-// @Accept json
-// @Produce json
-// @Param page query int false "Page number" default(1)
-// @Param limit query int false "Items per page" default(10)
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /orders [get]
+//
+//	@Summary		Get all orders
+//	@Description	Retrieve a paginated list of all orders with their order items
+//	@Tags			Orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			page	query	int	false	"Page number"		default(1)
+//	@Param			limit	query	int	false	"Items per page"	default(10)
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/orders [get]
 func GetOrders() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var orders []models.Order
@@ -47,16 +48,17 @@ func GetOrders() gin.HandlerFunc {
 }
 
 // GetOrder godoc
-// @Summary Get order by ID
-// @Description Retrieve a specific order by order_id with its order items
-// @Tags Orders
-// @Accept json
-// @Produce json
-// @Param order_id path string true "Order ID"
-// @Security BearerAuth
-// @Success 200 {object} models.Order
-// @Failure 404 {object} map[string]interface{}
-// @Router /orders/{order_id} [get]
+//
+//	@Summary		Get order by ID
+//	@Description	Retrieve a specific order by order_id with its order items
+//	@Tags			Orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			order_id	path	string	true	"Order ID"
+//	@Security		BearerAuth
+//	@Success		200	{object}	models.Order
+//	@Failure		404	{object}	map[string]interface{}
+//	@Router			/orders/{order_id} [get]
 func GetOrder() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		order_id := ctx.Param("order_id")
@@ -73,18 +75,19 @@ func GetOrder() gin.HandlerFunc {
 }
 
 // CreateOrder godoc
-// @Summary Create a new order
-// @Description Create a new order with order items. Automatically validates food items and calculates prices.
-// @Tags Orders
-// @Accept json
-// @Produce json
-// @Param order body controllers.OrderRequest true "Order with items"
-// @Security BearerAuth
-// @Success 201 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 404 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /orders [post]
+//
+//	@Summary		Create a new order
+//	@Description	Create a new order with order items. Automatically validates food items and calculates prices.
+//	@Tags			Orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			order	body	OrderRequest	true	"Order with items"
+//	@Security		BearerAuth
+//	@Success		201	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		404	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/orders [post]
 func CreateOrder() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var order models.Order
@@ -146,17 +149,18 @@ func CreateOrder() gin.HandlerFunc {
 }
 
 // CreateOrderItem godoc
-// @Summary Create a new order item
-// @Description Add a new item to an existing order
-// @Tags Orders
-// @Accept json
-// @Produce json
-// @Param order_item body models.OrderItem true "Order item object"
-// @Security BearerAuth
-// @Success 201 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /orderitems [post]
+//
+//	@Summary		Create a new order item
+//	@Description	Add a new item to an existing order
+//	@Tags			Orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			order_item	body	models.OrderItem	true	"Order item object"
+//	@Security		BearerAuth
+//	@Success		201	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/orderitems [post]
 func CreateOrderItem() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var orderItem models.OrderItem
@@ -186,19 +190,20 @@ func CreateOrderItem() gin.HandlerFunc {
 }
 
 // UpdateOrder godoc
-// @Summary Update an order
-// @Description Update an existing order by order_id. Cannot update if the order is already paid.
-// @Tags Orders
-// @Accept json
-// @Produce json
-// @Param order_id path string true "Order ID"
-// @Param order body models.Order true "Order object"
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 404 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /orders/{order_id} [put]
+//
+//	@Summary		Update an order
+//	@Description	Update an existing order by order_id. Cannot update if the order is already paid.
+//	@Tags			Orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			order_id	path	string			true	"Order ID"
+//	@Param			order		body	models.Order	true	"Order object"
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		404	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/orders/{order_id} [put]
 func UpdateOrder() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		order_id := ctx.Param("order_id")

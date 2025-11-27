@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NoteRoutes(incomingRoutes *gin.Engine){
+func NoteRoutes(incomingRoutes *gin.Engine) {
 	incomingRoutes.POST("/notes", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.CreateNote())
 	incomingRoutes.GET("/notes", middleware.Authentication(), controllers.GetNotes())
 	incomingRoutes.GET("/notes/:note_id", middleware.Authentication(), controllers.GetNote())

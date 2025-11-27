@@ -30,18 +30,19 @@ func VerifyPassword(password string, providedPassword string) (bool, string) {
 }
 
 // GetUsers godoc
-// @Summary Get all users (Admin only)
-// @Description Retrieve a paginated list of all users
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Param page query int false "Page number" default(1)
-// @Param limit query int false "Items per page" default(10)
-// @Security BearerAuth
-// @Success 200 {object} models.UsersListResponse
-// @Failure 401 {object} models.ErrorResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /users [get]
+//
+//	@Summary		Get all users (Admin only)
+//	@Description	Retrieve a paginated list of all users
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			page	query	int	false	"Page number"		default(1)
+//	@Param			limit	query	int	false	"Items per page"	default(10)
+//	@Security		BearerAuth
+//	@Success		200	{object}	models.UsersListResponse
+//	@Failure		401	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/users [get]
 func GetUsers() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var users []models.User
@@ -61,16 +62,17 @@ func GetUsers() gin.HandlerFunc {
 }
 
 // GetUser godoc
-// @Summary Get user by ID
-// @Description Retrieve a specific user by their user_id
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Param user_id path string true "User ID"
-// @Security BearerAuth
-// @Success 200 {object} models.UserResponse
-// @Failure 404 {object} models.ErrorResponse
-// @Router /users/{user_id} [get]
+//
+//	@Summary		Get user by ID
+//	@Description	Retrieve a specific user by their user_id
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user_id	path	string	true	"User ID"
+//	@Security		BearerAuth
+//	@Success		200	{object}	models.UserResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Router			/users/{user_id} [get]
 func GetUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userID := ctx.Param("user_id")
@@ -89,16 +91,17 @@ func GetUser() gin.HandlerFunc {
 }
 
 // SignUp godoc
-// @Summary Register a new user
-// @Description Create a new user account with email, password, and personal information
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Param user body models.SignUpRequest true "User registration details"
-// @Success 201 {object} models.SignUpResponse
-// @Failure 400 {object} models.ErrorResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /users/signup [post]
+//
+//	@Summary		Register a new user
+//	@Description	Create a new user account with email, password, and personal information
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.SignUpRequest	true	"User registration details"
+//	@Success		201		{object}	models.SignUpResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/users/signup [post]
 func SignUp() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var user models.User
@@ -139,16 +142,17 @@ func SignUp() gin.HandlerFunc {
 }
 
 // Login godoc
-// @Summary User login
-// @Description Authenticate user with email and password, returns JWT token
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Param credentials body models.LoginRequest true "Login credentials"
-// @Success 200 {object} models.LoginResponse
-// @Failure 400 {object} models.ErrorResponse
-// @Failure 401 {object} models.ErrorResponse
-// @Router /users/login [post]
+//
+//	@Summary		User login
+//	@Description	Authenticate user with email and password, returns JWT token
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			credentials	body		models.LoginRequest	true	"Login credentials"
+//	@Success		200			{object}	models.LoginResponse
+//	@Failure		400			{object}	models.ErrorResponse
+//	@Failure		401			{object}	models.ErrorResponse
+//	@Router			/users/login [post]
 func Login() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var loginInput struct {

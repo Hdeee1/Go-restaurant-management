@@ -11,17 +11,18 @@ import (
 )
 
 // GetTables godoc
-// @Summary Get all tables
-// @Description Retrieve a paginated list of all tables
-// @Tags Tables
-// @Accept json
-// @Produce json
-// @Param page query int false "Page number" default(1)
-// @Param limit query int false "Items per page" default(10)
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /tables [get]
+//
+//	@Summary		Get all tables
+//	@Description	Retrieve a paginated list of all tables
+//	@Tags			Tables
+//	@Accept			json
+//	@Produce		json
+//	@Param			page	query	int	false	"Page number"		default(1)
+//	@Param			limit	query	int	false	"Items per page"	default(10)
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/tables [get]
 func GetTables() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var tables []models.Table
@@ -41,16 +42,17 @@ func GetTables() gin.HandlerFunc {
 }
 
 // GetTable godoc
-// @Summary Get table by ID
-// @Description Retrieve a specific table by table_id
-// @Tags Tables
-// @Accept json
-// @Produce json
-// @Param table_id path string true "Table ID"
-// @Security BearerAuth
-// @Success 200 {object} models.Table
-// @Failure 404 {object} map[string]interface{}
-// @Router /tables/{table_id} [get]
+//
+//	@Summary		Get table by ID
+//	@Description	Retrieve a specific table by table_id
+//	@Tags			Tables
+//	@Accept			json
+//	@Produce		json
+//	@Param			table_id	path	string	true	"Table ID"
+//	@Security		BearerAuth
+//	@Success		200	{object}	models.Table
+//	@Failure		404	{object}	map[string]interface{}
+//	@Router			/tables/{table_id} [get]
 func GetTable() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tableID := ctx.Param("table_id")
@@ -67,17 +69,18 @@ func GetTable() gin.HandlerFunc {
 }
 
 // CreateTable godoc
-// @Summary Create a new table
-// @Description Create a new table with the provided information
-// @Tags Tables
-// @Accept json
-// @Produce json
-// @Param table body models.Table true "Table object"
-// @Security BearerAuth
-// @Success 201 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /tables [post]
+//
+//	@Summary		Create a new table
+//	@Description	Create a new table with the provided information
+//	@Tags			Tables
+//	@Accept			json
+//	@Produce		json
+//	@Param			table	body	models.Table	true	"Table object"
+//	@Security		BearerAuth
+//	@Success		201	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/tables [post]
 func CreateTable() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var table models.Table
@@ -107,19 +110,20 @@ func CreateTable() gin.HandlerFunc {
 }
 
 // UpdateTable godoc
-// @Summary Update a table
-// @Description Update an existing table by table_id
-// @Tags Tables
-// @Accept json
-// @Produce json
-// @Param table_id path string true "Table ID"
-// @Param table body models.Table true "Table object"
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 404 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /tables/{table_id} [put]
+//
+//	@Summary		Update a table
+//	@Description	Update an existing table by table_id
+//	@Tags			Tables
+//	@Accept			json
+//	@Produce		json
+//	@Param			table_id	path	string			true	"Table ID"
+//	@Param			table		body	models.Table	true	"Table object"
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		404	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/tables/{table_id} [put]
 func UpdateTable() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tableID := ctx.Param("table_id")

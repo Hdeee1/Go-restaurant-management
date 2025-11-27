@@ -14,7 +14,7 @@ func Paginate(ctx *gin.Context) func(db *gorm.DB) *gorm.DB {
 			page = 1
 		}
 
-		limit, _:= strconv.Atoi(ctx.DefaultQuery("limit", "10")) 
+		limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "10"))
 		switch {
 		case limit > 100:
 			limit = 100

@@ -14,21 +14,45 @@ import (
 	_ "github.com/Hdeee1/go-restaurant-management/docs"
 )
 
-// @title Restaurant Management API
-// @version 1.0
-// @description This is a comprehensive restaurant management system API built with Go and Gin framework
-// @description Features include user management, food menus, table reservations, orders, and invoicing
+//	@title			Restaurant Management API
+//	@version		1.0
+//	@description	This is a comprehensive restaurant management system API built with Go and Gin framework
+//	@description	Features include user management, food menus, table reservations, orders, and invoicing
 
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
+//	@license.name	MIT
+//	@license.url	https://opensource.org/licenses/MIT
 
-// @host localhost:8081
-// @BasePath /
+//	@host		localhost:8081
+//	@BasePath	/
 
-// @securityDefinitions.apikey BearerAuth
-// @in header
-// @name Authorization
-// @description Type "Bearer" followed by a space and JWT token.
+//	@securityDefinitions.apikey	BearerAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Type "Bearer" followed by a space and JWT token.
+
+//	@tag.name			Users
+//	@tag.description	Operations about Users (SingUp, Login, Profile)
+
+//	@tag.name			Menus
+//	@tag.description	Menu Management
+
+//	@tag.name			Foods
+//	@tag.description	Manage Food Item
+
+//	@tag.name			Tables
+//	@tag.description	Restaurant Tables
+
+//	@tag.name			Orders
+//	@tag.description	Order Management
+
+//	@tag.name			OrderItems
+//	@tag.description	Order Item Details
+
+//	@tag.name			Invoices
+//	@tag.description	Payment and Invoice
+
+//	@tag.name			Notes
+//	@tag.description	Additional Notes for Orders
 
 func printRoutes(router *gin.Engine) {
 	routesList := router.Routes()
@@ -83,7 +107,7 @@ func printRoutes(router *gin.Engine) {
 		port = "8080"
 	}
 	fmt.Printf("\nServer running on http://localhost:%s\n", port)
-	fmt.Println("════════════════════════════════════════\n")
+	fmt.Println("════════════════════════════════════════")
 }
 
 func toUpperCategory(s string) string {

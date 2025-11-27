@@ -10,17 +10,18 @@ import (
 )
 
 // GetNotes godoc
-// @Summary Get all notes
-// @Description Retrieve a paginated list of all notes
-// @Tags Notes
-// @Accept json
-// @Produce json
-// @Param page query int false "Page number" default(1)
-// @Param limit query int false "Items per page" default(10)
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /notes [get]
+//
+//	@Summary		Get all notes
+//	@Description	Retrieve a paginated list of all notes
+//	@Tags			Notes
+//	@Accept			json
+//	@Produce		json
+//	@Param			page	query	int	false	"Page number"		default(1)
+//	@Param			limit	query	int	false	"Items per page"	default(10)
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/notes [get]
 func GetNotes() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var notes []models.Note
@@ -40,16 +41,17 @@ func GetNotes() gin.HandlerFunc {
 }
 
 // GetNote godoc
-// @Summary Get note by ID
-// @Description Retrieve a specific note by note_id
-// @Tags Notes
-// @Accept json
-// @Produce json
-// @Param note_id path string true "Note ID"
-// @Security BearerAuth
-// @Success 200 {object} models.Note
-// @Failure 404 {object} map[string]interface{}
-// @Router /notes/{note_id} [get]
+//
+//	@Summary		Get note by ID
+//	@Description	Retrieve a specific note by note_id
+//	@Tags			Notes
+//	@Accept			json
+//	@Produce		json
+//	@Param			note_id	path	string	true	"Note ID"
+//	@Security		BearerAuth
+//	@Success		200	{object}	models.Note
+//	@Failure		404	{object}	map[string]interface{}
+//	@Router			/notes/{note_id} [get]
 func GetNote() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		note_id := ctx.Param("note_id")
@@ -66,17 +68,18 @@ func GetNote() gin.HandlerFunc {
 }
 
 // CreateNote godoc
-// @Summary Create a new note
-// @Description Create a new note with the provided information
-// @Tags Notes
-// @Accept json
-// @Produce json
-// @Param note body models.Note true "Note object"
-// @Security BearerAuth
-// @Success 201 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /notes [post]
+//
+//	@Summary		Create a new note
+//	@Description	Create a new note with the provided information
+//	@Tags			Notes
+//	@Accept			json
+//	@Produce		json
+//	@Param			note	body	models.Note	true	"Note object"
+//	@Security		BearerAuth
+//	@Success		201	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/notes [post]
 func CreateNote() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var note models.Note
@@ -99,19 +102,20 @@ func CreateNote() gin.HandlerFunc {
 }
 
 // UpdateNote godoc
-// @Summary Update a note
-// @Description Update an existing note by note_id
-// @Tags Notes
-// @Accept json
-// @Produce json
-// @Param note_id path string true "Note ID"
-// @Param note body models.Note true "Note object"
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 404 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /notes/{note_id} [put]
+//
+//	@Summary		Update a note
+//	@Description	Update an existing note by note_id
+//	@Tags			Notes
+//	@Accept			json
+//	@Produce		json
+//	@Param			note_id	path	string		true	"Note ID"
+//	@Param			note	body	models.Note	true	"Note object"
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		404	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/notes/{note_id} [put]
 func UpdateNote() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		note_id := ctx.Param("note_id")

@@ -11,17 +11,18 @@ import (
 )
 
 // GetInvoices godoc
-// @Summary Get all invoices
-// @Description Retrieve a paginated list of all invoices
-// @Tags Invoices
-// @Accept json
-// @Produce json
-// @Param page query int false "Page number" default(1)
-// @Param limit query int false "Items per page" default(10)
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /invoices [get]
+//
+//	@Summary		Get all invoices
+//	@Description	Retrieve a paginated list of all invoices
+//	@Tags			Invoices
+//	@Accept			json
+//	@Produce		json
+//	@Param			page	query	int	false	"Page number"		default(1)
+//	@Param			limit	query	int	false	"Items per page"	default(10)
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/invoices [get]
 func GetInvoices() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var invoices []models.Invoice
@@ -41,16 +42,17 @@ func GetInvoices() gin.HandlerFunc {
 }
 
 // GetInvoice godoc
-// @Summary Get invoice by ID
-// @Description Retrieve a specific invoice by invoice_id
-// @Tags Invoices
-// @Accept json
-// @Produce json
-// @Param invoice_id path string true "Invoice ID"
-// @Security BearerAuth
-// @Success 200 {object} models.Invoice
-// @Failure 404 {object} map[string]interface{}
-// @Router /invoices/{invoice_id} [get]
+//
+//	@Summary		Get invoice by ID
+//	@Description	Retrieve a specific invoice by invoice_id
+//	@Tags			Invoices
+//	@Accept			json
+//	@Produce		json
+//	@Param			invoice_id	path	string	true	"Invoice ID"
+//	@Security		BearerAuth
+//	@Success		200	{object}	models.Invoice
+//	@Failure		404	{object}	map[string]interface{}
+//	@Router			/invoices/{invoice_id} [get]
 func GetInvoice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		invoice_id := ctx.Param("invoice_id")
@@ -67,17 +69,18 @@ func GetInvoice() gin.HandlerFunc {
 }
 
 // CreateInvoice godoc
-// @Summary Create a new invoice
-// @Description Create a new invoice with the provided information
-// @Tags Invoices
-// @Accept json
-// @Produce json
-// @Param invoice body models.Invoice true "Invoice object"
-// @Security BearerAuth
-// @Success 201 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /invoices [post]
+//
+//	@Summary		Create a new invoice
+//	@Description	Create a new invoice with the provided information
+//	@Tags			Invoices
+//	@Accept			json
+//	@Produce		json
+//	@Param			invoice	body	models.Invoice	true	"Invoice object"
+//	@Security		BearerAuth
+//	@Success		201	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/invoices [post]
 func CreateInvoice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var invoice models.Invoice
@@ -107,19 +110,20 @@ func CreateInvoice() gin.HandlerFunc {
 }
 
 // UpdateInvoice godoc
-// @Summary Update an invoice
-// @Description Update an existing invoice by invoice_id
-// @Tags Invoices
-// @Accept json
-// @Produce json
-// @Param invoice_id path string true "Invoice ID"
-// @Param invoice body models.Invoice true "Invoice object"
-// @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 404 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /invoices/{invoice_id} [put]
+//
+//	@Summary		Update an invoice
+//	@Description	Update an existing invoice by invoice_id
+//	@Tags			Invoices
+//	@Accept			json
+//	@Produce		json
+//	@Param			invoice_id	path	string			true	"Invoice ID"
+//	@Param			invoice		body	models.Invoice	true	"Invoice object"
+//	@Security		BearerAuth
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Failure		404	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/invoices/{invoice_id} [put]
 func UpdateInvoice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		invoice_id := ctx.Param("invoice_id")
