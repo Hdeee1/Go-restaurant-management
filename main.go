@@ -11,16 +11,13 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "github.com/Hdeee1/go-restaurant-management/docs" // This will be auto-generated
+	_ "github.com/Hdeee1/go-restaurant-management/docs"
 )
 
 // @title Restaurant Management API
 // @version 1.0
 // @description This is a comprehensive restaurant management system API built with Go and Gin framework
 // @description Features include user management, food menus, table reservations, orders, and invoicing
-
-// @contact.name API Support
-// @contact.email support@restaurant-api.com
 
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
@@ -58,9 +55,6 @@ func printRoutes(router *gin.Engine) {
 
 	// Define the order of categories based on application flow
 	categoryOrder := []string{"users", "food", "menu", "table", "order", "orderitem", "invoice"}
-
-	fmt.Println("\n")
-	fmt.Println("         REGISTERED ROUTES              ")
 
 	// Print routes in order
 	for _, category := range categoryOrder {

@@ -10,6 +10,18 @@ import (
 	"github.com/google/uuid"
 )
 
+// GetMenus godoc
+// @Summary Get all menus
+// @Description Retrieve a paginated list of all menus
+// @Tags Menus
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Items per page" default(10)
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /menus [get]
 func GetMenus() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var menus []models.Menu
@@ -17,17 +29,28 @@ func GetMenus() gin.HandlerFunc {
 		result := database.DB.Scopes(helpers.Paginate(ctx)).Find(&menus)
 		if result.Error != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-			return 
+			return
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"menus": menus,
-			"page": ctx.DefaultQuery("page", "1"),
+			"page":  ctx.DefaultQuery("page", "1"),
 			"limit": ctx.DefaultQuery("limit", "10"),
 		})
 	}
 }
 
+// GetMenu godoc
+// @Summary Get menu by ID
+// @Description Retrieve a specific menu by menu_id
+// @Tags Menus
+// @Accept json
+// @Produce json
+// @Param menu_id path string true "Menu ID"
+// @Security BearerAuth
+// @Success 200 {object} models.Menu
+// @Failure 404 {object} map[string]interface{}
+// @Router /menus/{menu_id} [get]
 func GetMenu() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		menu_id := ctx.Param("menu_id")
@@ -43,19 +66,30 @@ func GetMenu() gin.HandlerFunc {
 	}
 }
 
+// CreateMenu godoc
+// @Summary Create a new menu (Admin only)
+// @Description Create a new menu with the provided information. Requires admin role.
+// @Tags Menus
+// @Accept json
+// @Produce json
+// @Param menu body models.Menu true "Menu object"
+// @Security BearerAuth
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /menus [post]
 func CreateMenu() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var menu models.Menu
 
-		
 		if err := ctx.BindJSON(&menu); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return 
+			return
 		}
 
 		if err := helpers.Validate.Struct(menu); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return 
+			return
 		}
 
 		menu.Menu_id = uuid.New().String()
@@ -79,6 +113,20 @@ func CreateMenu() gin.HandlerFunc {
 	}
 }
 
+// UpdateMenu godoc
+// @Summary Update a menu (Admin only)
+// @Description Update an existing menu by menu_id. Requires admin role.
+// @Tags Menus
+// @Accept json
+// @Produce json
+// @Param menu_id path string true "Menu ID"
+// @Param menu body models.Menu true "Menu object"
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /menus/{menu_id} [put]
 func UpdateMenu() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		menuID := ctx.Param("menu_id")
@@ -93,12 +141,12 @@ func UpdateMenu() gin.HandlerFunc {
 		var updateData models.Menu
 		if err := ctx.BindJSON(&updateData); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return 
+			return
 		}
 
 		if err := database.DB.Model(&menu).Updates(updateData).Error; err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return 
+			return
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{

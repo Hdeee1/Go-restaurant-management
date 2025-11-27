@@ -10,6 +10,18 @@ import (
 	"github.com/google/uuid"
 )
 
+// GetInvoices godoc
+// @Summary Get all invoices
+// @Description Retrieve a paginated list of all invoices
+// @Tags Invoices
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Items per page" default(10)
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /invoices [get]
 func GetInvoices() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var invoices []models.Invoice
@@ -17,17 +29,28 @@ func GetInvoices() gin.HandlerFunc {
 		result := database.DB.Scopes(helpers.Paginate(ctx)).Find(&invoices)
 		if result.Error != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-			return 
+			return
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"invoices": invoices,
-			"page": ctx.DefaultQuery("page", "1"),
-			"limit": ctx.DefaultQuery("limit", "10"),
+			"page":     ctx.DefaultQuery("page", "1"),
+			"limit":    ctx.DefaultQuery("limit", "10"),
 		})
 	}
 }
 
+// GetInvoice godoc
+// @Summary Get invoice by ID
+// @Description Retrieve a specific invoice by invoice_id
+// @Tags Invoices
+// @Accept json
+// @Produce json
+// @Param invoice_id path string true "Invoice ID"
+// @Security BearerAuth
+// @Success 200 {object} models.Invoice
+// @Failure 404 {object} map[string]interface{}
+// @Router /invoices/{invoice_id} [get]
 func GetInvoice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		invoice_id := ctx.Param("invoice_id")
@@ -43,10 +66,22 @@ func GetInvoice() gin.HandlerFunc {
 	}
 }
 
+// CreateInvoice godoc
+// @Summary Create a new invoice
+// @Description Create a new invoice with the provided information
+// @Tags Invoices
+// @Accept json
+// @Produce json
+// @Param invoice body models.Invoice true "Invoice object"
+// @Security BearerAuth
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /invoices [post]
 func CreateInvoice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var invoice models.Invoice
-		
+
 		if err := ctx.BindJSON(&invoice); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -65,12 +100,26 @@ func CreateInvoice() gin.HandlerFunc {
 		}
 
 		ctx.JSON(http.StatusCreated, gin.H{
-			"message": "invoice created",
+			"message":    "invoice created",
 			"invoice_id": invoice.Invoice_id,
 		})
 	}
 }
 
+// UpdateInvoice godoc
+// @Summary Update an invoice
+// @Description Update an existing invoice by invoice_id
+// @Tags Invoices
+// @Accept json
+// @Produce json
+// @Param invoice_id path string true "Invoice ID"
+// @Param invoice body models.Invoice true "Invoice object"
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /invoices/{invoice_id} [put]
 func UpdateInvoice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		invoice_id := ctx.Param("invoice_id")
@@ -94,7 +143,7 @@ func UpdateInvoice() gin.HandlerFunc {
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
-			"message": "invoice updated",
+			"message":    "invoice updated",
 			"invoice_id": invoice.Invoice_id,
 		})
 	}
