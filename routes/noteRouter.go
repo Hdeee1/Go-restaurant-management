@@ -7,7 +7,7 @@ import (
 )
 
 func NoteRoutes(incomingRoutes *gin.Engine) {
-	incomingRoutes.POST("/notes", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.CreateNote())
+	incomingRoutes.POST("/notes", middleware.Authentication(), middleware.CheckRole("admin"), controllers.CreateNote())
 	incomingRoutes.GET("/notes", middleware.Authentication(), controllers.GetNotes())
 	incomingRoutes.GET("/notes/:note_id", middleware.Authentication(), controllers.GetNote())
 	incomingRoutes.PATCH("/notes/:note_id", middleware.Authentication(), controllers.UpdateNote())

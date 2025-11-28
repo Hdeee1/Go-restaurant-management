@@ -19,7 +19,6 @@ import (
 //	@Produce		json
 //	@Param			page	query	int	false	"Page number"		default(1)
 //	@Param			limit	query	int	false	"Items per page"	default(10)
-//	@Security		BearerAuth
 //	@Success		200	{object}	map[string]interface{}
 //	@Failure		500	{object}	map[string]interface{}
 //	@Router			/tables [get]

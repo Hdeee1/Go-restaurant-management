@@ -7,8 +7,8 @@ import (
 )
 
 func MenuRoutes(incomingRoutes *gin.Engine) {
-	incomingRoutes.POST("/menus", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.CreateMenu())
+	incomingRoutes.POST("/menus", middleware.Authentication(), middleware.CheckRole("admin"), controllers.CreateMenu())
 	incomingRoutes.GET("/menus", controllers.GetMenus())
 	incomingRoutes.GET("/menus/:menu_id", controllers.GetMenu())
-	incomingRoutes.PATCH("/menus/:menu_id", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.UpdateMenu())
+	incomingRoutes.PATCH("/menus/:menu_id", middleware.Authentication(), middleware.CheckRole("admin"), controllers.UpdateMenu())
 }

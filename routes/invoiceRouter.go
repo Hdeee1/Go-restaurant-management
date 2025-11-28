@@ -7,8 +7,8 @@ import (
 )
 
 func InvoiceRoutes(incomingRoutes *gin.Engine) {
-	incomingRoutes.POST("/invoices", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.CreateInvoice())
+	incomingRoutes.POST("/invoices", middleware.Authentication(), middleware.CheckRole("admin"), controllers.CreateInvoice())
 	incomingRoutes.GET("/invoices", middleware.Authentication(), controllers.GetInvoices())
 	incomingRoutes.GET("/invoices/:invoice_id", middleware.Authentication(), controllers.GetInvoice())
-	incomingRoutes.PATCH("/invoices/:invoice_id", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.UpdateInvoice())
+	incomingRoutes.PATCH("/invoices/:invoice_id", middleware.Authentication(), middleware.CheckRole("admin"), controllers.UpdateInvoice())
 }

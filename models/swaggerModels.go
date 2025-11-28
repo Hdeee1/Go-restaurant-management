@@ -7,7 +7,7 @@ type UserResponse struct {
 	ID           uint      `json:"id" example:"1"`
 	CreatedAt    time.Time `json:"created_at" example:"2025-01-01T00:00:00Z"`
 	UpdatedAt    time.Time `json:"updated_at" example:"2025-01-01T00:00:00Z"`
-	Role         string    `json:"role" example:"ADMIN"`
+	Role         string    `json:"role" example:"admin"`
 	FirstName    string    `json:"first_name" example:"John"`
 	LastName     string    `json:"last_name" example:"Doe"`
 	Email        string    `json:"email" example:"user@example.com"`

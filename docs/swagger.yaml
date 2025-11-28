@@ -284,7 +284,7 @@ definitions:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
       role:
-        example: ADMIN
+        example: admin
         type: string
       token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -386,6 +386,8 @@ paths:
           schema:
             additionalProperties: true
             type: object
+      security:
+      - BearerAuth: []
       summary: Add a new food
       tags:
       - Foods
@@ -453,6 +455,8 @@ paths:
           schema:
             additionalProperties: true
             type: object
+      security:
+      - BearerAuth: []
       summary: Update a food
       tags:
       - Foods
@@ -625,8 +629,6 @@ paths:
           schema:
             additionalProperties: true
             type: object
-      security:
-      - BearerAuth: []
       summary: Get all menus
       tags:
       - Menus
@@ -688,8 +690,6 @@ paths:
           schema:
             additionalProperties: true
             type: object
-      security:
-      - BearerAuth: []
       summary: Get menu by ID
       tags:
       - Menus
@@ -1193,8 +1193,6 @@ paths:
           schema:
             additionalProperties: true
             type: object
-      security:
-      - BearerAuth: []
       summary: Get all tables
       tags:
       - Tables

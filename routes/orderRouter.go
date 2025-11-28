@@ -10,5 +10,5 @@ func OrderRoutes(incomingRoutes *gin.Engine) {
 	incomingRoutes.POST("/orders", middleware.Authentication(), controllers.CreateOrder())
 	incomingRoutes.GET("/orders", middleware.Authentication(), controllers.GetOrders())
 	incomingRoutes.GET("/orders/:order_id", middleware.Authentication(), controllers.GetOrder())
-	incomingRoutes.PATCH("/orders/:order_id", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.UpdateOrder())
+	incomingRoutes.PATCH("/orders/:order_id", middleware.Authentication(), middleware.CheckRole("admin"), controllers.UpdateOrder())
 }

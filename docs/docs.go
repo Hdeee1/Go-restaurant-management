@@ -76,6 +76,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add a new food",
                 "consumes": [
                     "application/json"
@@ -168,6 +173,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a food",
                 "consumes": [
                     "application/json"
@@ -437,11 +447,6 @@ const docTemplate = `{
         },
         "/menus": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Retrieve a paginated list of all menus",
                 "consumes": [
                     "application/json"
@@ -541,11 +546,6 @@ const docTemplate = `{
         },
         "/menus/{menu_id}": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Retrieve a specific menu by menu_id",
                 "consumes": [
                     "application/json"
@@ -1300,11 +1300,6 @@ const docTemplate = `{
         },
         "/tables": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Retrieve a paginated list of all tables",
                 "consumes": [
                     "application/json"
@@ -2115,7 +2110,7 @@ const docTemplate = `{
                 },
                 "role": {
                     "type": "string",
-                    "example": "ADMIN"
+                    "example": "admin"
                 },
                 "token": {
                     "type": "string",

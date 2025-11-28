@@ -7,8 +7,8 @@ import (
 )
 
 func FoodRoutes(incomingRoutes *gin.Engine) {
-	incomingRoutes.POST("/foods", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.AddFood())
-	incomingRoutes.PATCH("/foods/:food_id", middleware.Authentication(), middleware.CheckRole("ADMIN"), controllers.UpdateFood())
+	incomingRoutes.POST("/foods", middleware.Authentication(), middleware.CheckRole("admin"), controllers.AddFood())
+	incomingRoutes.PATCH("/foods/:food_id", middleware.Authentication(), middleware.CheckRole("admin"), controllers.UpdateFood())
 	incomingRoutes.GET("/foods", controllers.GetFoods())
 	incomingRoutes.GET("/foods/:food_id", controllers.GetFood())
 }

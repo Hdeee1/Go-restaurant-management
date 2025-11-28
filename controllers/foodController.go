@@ -77,6 +77,7 @@ func GetFood() gin.HandlerFunc {
 //	@Accept			json
 //	@Produce		json
 //	@Param			food	body		models.Food	true	"Food object"
+//	@Security		BearerAuth
 //	@Success		201		{object}	models.Food
 //	@Failure		400		{object}	map[string]interface{}
 //	@Failure		500		{object}	map[string]interface{}
@@ -125,6 +126,7 @@ func AddFood() gin.HandlerFunc {
 //	@Produce		json
 //	@Param			food_id	path		string		true	"Food ID"
 //	@Param			food	body		models.Food	true	"Food object"
+//	@Security		BearerAuth
 //	@Success		200		{object}	models.Food
 //	@Failure		400		{object}	map[string]interface{}
 //	@Failure		500		{object}	map[string]interface{}
